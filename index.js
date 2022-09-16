@@ -59,7 +59,8 @@ const publicProcess = (req, res) => {
         'X-Server': 'mingwiki',
         server: 'mingwiki',
       })
-      res.end('Welcome to mingwiki server!')
+      res.end(pathname)
+      // res.end('Welcome to mingwiki server!')
     }
   }
 }

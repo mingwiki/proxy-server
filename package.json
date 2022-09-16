@@ -1,7 +1,7 @@
 {
   "name": "proxy-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Proxy Server for Http(s) written by Node",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
@@ -10,9 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/mingwiki/proxy-server.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "proxy-server",
+    "node",
+    "mingwiki"
+  ],
+  "author": "mingwiki@gmail.com",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mingwiki/proxy-server/issues"
   },

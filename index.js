@@ -3,6 +3,7 @@ import https from 'https'
 import httpProxy from 'http-proxy'
 import fs from 'fs'
 import tls from 'tls'
+import { domains, preHeaders } from './config.js'
 const proxy = httpProxy.createProxyServer()
 proxy.on('error', function (err, req, res) {
   console.log(err)
@@ -15,9 +16,9 @@ proxy.on('open', function (proxySocket) {
   console.log('open', proxySocket)
 })
 proxy.on('proxyReq', function (proxyReq, req, res, options) {
-  res.setHeader('X-Special-Proxy-Header', 'mingwiki')
-  res.setHeader('X-Server', 'mingwiki')
-  res.setHeader('server', 'mingwiki')
+  for (const [k, v] of Object.entries(preHeaders)) {
+    res.setHeader(k, v)
+  }
 })
 proxy.on('upgrade', function (req, socket, head) {
   proxy.ws(req, socket, head)
@@ -25,16 +26,6 @@ proxy.on('upgrade', function (req, socket, head) {
 proxy.on('close', function (res, socket, head) {
   console.log('Client disconnected')
 })
-const domains = {
-  'anki.naizi.fun': 'http://10.10.10.10:27701',
-  'vault.naizi.fun': 'http://10.10.10.10:777',
-  'cal.naizi.fun': 'http://10.10.10.10:5232',
-  'sync.naizi.fun': 'http://10.10.10.10:8384',
-  'photo.naizi.fun': 'http://10.10.10.10:2342',
-  'rss.naizi.fun': 'http://10.10.10.10:1880',
-  'draw.naizi.fun': 'http://10.10.10.10:8082',
-  'db.naizi.fun': 'http://10.10.10.10:8000',
-}
 const publicProcess = (req, res) => {
   const host = req.headers.host.split(':')[0]
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -53,12 +44,7 @@ const publicProcess = (req, res) => {
       res.setHeader('Content-Type', 'image/png')
       fs.createReadStream('./wiki.png').pipe(res)
     } else {
-      res.writeHead(200, {
-        'Content-Type': 'text/plain',
-        'X-Special-Proxy-Header': 'mingwiki',
-        'X-Server': 'mingwiki',
-        server: 'mingwiki',
-      })
+      res.writeHead(200, preHeaders)
       res.end('Welcome to mingwiki server!')
     }
   }
@@ -70,9 +56,7 @@ const getSecureContext = (domain) => {
       cert: fs.readFileSync(`./certs/${domain}.pem`, 'utf8'),
       ca: fs.readFileSync('./certs/root.cer', 'utf8'),
     })
-  } catch (error) {
-    // console.log(error)
-  }
+  } catch (error) {}
 }
 const preGetSecureContext = () => {
   const res = {}

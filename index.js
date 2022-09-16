@@ -16,6 +16,7 @@ proxy.on('open', function (proxySocket) {
 })
 proxy.on('proxyReq', function (proxyReq, req, res, options) {
   res.setHeader('X-Special-Proxy-Header', 'mingwiki')
+  res.setHeader('X-Server', 'mingwiki')
   res.setHeader('Server', 'mingwiki')
 })
 proxy.on('upgrade', function (req, socket, head) {
@@ -47,6 +48,8 @@ const publicProcess = (req, res) => {
   } else {
     res.writeHead(200, {
       'Content-Type': 'text/plain',
+      'X-Special-Proxy-Header': 'mingwiki',
+      'X-Server': 'mingwiki',
       Server: 'mingwiki',
     })
     res.end('Welcome to mingwiki server!')

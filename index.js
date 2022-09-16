@@ -53,11 +53,15 @@ const publicProcess = (req, res) => {
   }
 }
 const getSecureContext = (domain) => {
-  return tls.createSecureContext({
-    key: fs.readFileSync(`./certs/${domain}.key`, 'utf8'),
-    cert: fs.readFileSync(`./certs/${domain}.pem`, 'utf8'),
-    ca: fs.readFileSync('./certs/root.cer', 'utf8'),
-  })
+  try {
+    return tls.createSecureContext({
+      key: fs.readFileSync(`./certs/${domain}.key`, 'utf8'),
+      cert: fs.readFileSync(`./certs/${domain}.pem`, 'utf8'),
+      ca: fs.readFileSync('./certs/root.cer', 'utf8'),
+    })
+  } catch (error) {
+    // console.log(error)
+  }
 }
 const preGetSecureContext = () => {
   const res = {}

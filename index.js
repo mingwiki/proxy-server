@@ -46,13 +46,18 @@ const publicProcess = (req, res) => {
       changeOrigin: true,
     })
   } else {
-    res.writeHead(200, {
-      'Content-Type': 'text/plain',
-      'X-Special-Proxy-Header': 'mingwiki',
-      'X-Server': 'mingwiki',
-      server: 'mingwiki',
-    })
-    res.end('Welcome to mingwiki server!')
+    if (req.url === '/favicon.ico') {
+      res.setHeader('Content-Type', 'image/png')
+      fs.createReadStream('./wiki.png').pipe(res)
+    } else {
+      res.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'X-Special-Proxy-Header': 'mingwiki',
+        'X-Server': 'mingwiki',
+        server: 'mingwiki',
+      })
+      res.end('Welcome to mingwiki server!')
+    }
   }
 }
 const getSecureContext = (domain) => {

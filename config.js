@@ -9,7 +9,6 @@ export const domains = {
   'db.naizi.fun': 'http://10.10.10.10:8000',
 }
 export const preHeaders = {
-  'x-proxy-header': 'mingwiki',
   'x-powered-by': 'mingwiki',
   'x-redirect-by': 'mingwiki',
   'x-server': 'mingwiki',

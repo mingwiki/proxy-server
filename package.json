@@ -1,0 +1,25 @@
+{
+  "name": "proxy-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mingwiki/proxy-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mingwiki/proxy-server/issues"
+  },
+  "homepage": "https://github.com/mingwiki/proxy-server#readme",
+  "dependencies": {
+    "http-proxy": "^1.18.1",
+    "nodemon": "^2.0.19"
+  },
+  "type": "module"
+}

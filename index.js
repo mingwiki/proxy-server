@@ -37,10 +37,10 @@ const domains = {
 const publicProcess = (req, res) => {
   const host = req.headers.host.split(':')[0]
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-  const domainKV = domains[host] || undefined
-  if (domainKV) {
+  const domainURL = domains[host] || undefined
+  if (domainURL) {
     proxy.web(req, res, {
-      target: domainKV[1],
+      target: domainURL,
       secure: false,
       changeOrigin: true,
     })

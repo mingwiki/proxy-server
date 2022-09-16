@@ -46,7 +46,10 @@ const publicProcess = (req, res) => {
       changeOrigin: true,
     })
   } else {
-    if (req.url === '/favicon.ico') {
+    const pathname = req.url.startsWith('http')
+      ? new URL(req.url).pathname
+      : req.url
+    if (pathname === '/favicon.ico') {
       res.setHeader('Content-Type', 'image/png')
       fs.createReadStream('./wiki.png').pipe(res)
     } else {

@@ -46,10 +46,10 @@ const publicProcess = (req, res) => {
       changeOrigin: true,
     })
   } else {
-    const pathname = req.url.startsWith('http')
+    const path = req.url.startsWith('http')
       ? new URL(req.url).pathname
       : req.url
-    if (pathname === '/favicon.ico') {
+    if (path.startsWith('/favicon.ico')) {
       res.setHeader('Content-Type', 'image/png')
       fs.createReadStream('./wiki.png').pipe(res)
     } else {
@@ -59,8 +59,7 @@ const publicProcess = (req, res) => {
         'X-Server': 'mingwiki',
         server: 'mingwiki',
       })
-      res.end(pathname)
-      // res.end('Welcome to mingwiki server!')
+      res.end('Welcome to mingwiki server!')
     }
   }
 }

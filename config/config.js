@@ -8,9 +8,3 @@ export const domains = {
   'draw.naizi.fun': 'http://10.10.10.10:8082',
   'db.naizi.fun': 'http://10.10.10.10:8000',
 }
-export const preHeaders = {
-  'x-powered-by': 'mingwiki',
-  'x-redirect-by': 'mingwiki',
-  'x-server': 'mingwiki',
-  server: 'mingwiki',
-}

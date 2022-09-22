@@ -3,7 +3,7 @@ import https from 'https'
 import httpProxy from 'http-proxy'
 import fs from 'fs'
 import tls from 'tls'
-import { domains, preHeaders } from './config.js'
+import { domains } from './config/config.js'
 const proxy = httpProxy.createProxyServer()
 proxy.on('error', function (err, req, res) {
   console.log(err)
@@ -52,9 +52,9 @@ const publicProcess = (req, res) => {
 const getSecureContext = (domain) => {
   try {
     return tls.createSecureContext({
-      key: fs.readFileSync(`./certs/${domain}.key`, 'utf8'),
-      cert: fs.readFileSync(`./certs/${domain}.pem`, 'utf8'),
-      ca: fs.readFileSync('./certs/root.cer', 'utf8'),
+      key: fs.readFileSync(`./config/certs/${domain}.key`, 'utf8'),
+      cert: fs.readFileSync(`./config/certs/${domain}.pem`, 'utf8'),
+      ca: fs.readFileSync('./config/certs/root.ca', 'utf8'),
     })
   } catch (error) {}
 }
@@ -78,8 +78,8 @@ const options = {
       console.log('No keys/certificates for domain requested')
     }
   },
-  cert: fs.readFileSync(`./certs/localhost.crt`, 'utf8'),
-  key: fs.readFileSync(`./certs/localhost.key`, 'utf8'),
+  cert: fs.readFileSync(`./localhost.pem`, 'utf8'),
+  key: fs.readFileSync(`./localhost.key`, 'utf8'),
 }
 const httpServer = http.createServer((req, res) => {
   publicProcess(req, res)
@@ -89,3 +89,10 @@ const httpsServer = https.createServer(options, (req, res) => {
 })
 httpServer.listen(100)
 httpsServer.listen(200)
+
+export const preHeaders = {
+  'x-powered-by': 'mingwiki',
+  'x-redirect-by': 'mingwiki',
+  'x-server': 'mingwiki',
+  server: 'mingwiki',
+}

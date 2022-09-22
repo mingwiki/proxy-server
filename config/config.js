@@ -1,4 +1,5 @@
 export const domains = {
+  'naizi.fun': '',
   'anki.naizi.fun': 'http://10.10.10.10:27701',
   'vault.naizi.fun': 'http://10.10.10.10:777',
   'cal.naizi.fun': 'http://10.10.10.10:5232',

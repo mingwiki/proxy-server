@@ -37,7 +37,7 @@ proxy.on('close', function (res, socket, head) {
 const publicProcess = (req, res) => {
   const subdomain = getSubdomain(req.headers.host)
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-  const domainURL = subdomains[subdomain].proxy || undefined
+  const domainURL = subdomains[subdomain]?.proxy || undefined
   if (domainURL) {
     proxy.web(req, res, {
       target: domainURL,
@@ -60,8 +60,8 @@ const publicProcess = (req, res) => {
 const getSecureContext = (subdomain) => {
   try {
     return tls.createSecureContext({
-      key: readFileSync(subdomains[subdomain].key || '', 'utf8'),
-      cert: readFileSync(subdomains[subdomain].cert || '', 'utf8'),
+      key: readFileSync(subdomains[subdomain]?.key || '', 'utf8'),
+      cert: readFileSync(subdomains[subdomain]?.cert || '', 'utf8'),
       ca: readFileSync(CertCA, 'utf8'),
     })
   } catch (error) {}

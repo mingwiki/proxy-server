@@ -14,4 +14,4 @@ $ forever start -a -l forever.log -o out.log -e err.log app
 
 ## Configuration
 
-> Edit the config.js file in your application
+> Edit the config.yml file in your application

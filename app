@@ -50,7 +50,7 @@ const publicProcess = (req, res) => {
       : req.url
     if (path.startsWith('/favicon.ico')) {
       res.setHeader('Content-Type', 'image/png')
-      createReadStream('./favicon.png').pipe(res)
+      createReadStream('etc/favicon.png').pipe(res)
     } else {
       res.writeHead(200, preHeaders)
       res.end('Welcome to mingwiki server!')

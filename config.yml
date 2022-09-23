@@ -1,0 +1,9 @@
+root: example.com
+ca: /certs/root.crt
+subdomains:
+  code: # http(s)://code.example.com
+    proxy: http://127.0.0.1:8080
+    cert: /certs/code.example.com.pem
+    key: /certs/code.example.com.key
+  git: # http://git.example.com
+    proxy: http://10.10.10.10:6666

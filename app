@@ -1,10 +1,18 @@
-import http from 'http'
-import https from 'https'
-import httpProxy from 'http-proxy'
-import fs from 'fs'
-import tls from 'tls'
-import { domains } from './config/config.js'
+#!/usr/bin/env node
+const http = require('http')
+const https = require('https')
+const { createReadStream, readFileSync } = require('fs')
+const tls = require('tls')
+const httpProxy = require('http-proxy')
+const parse = require('yaml').parse
 const proxy = httpProxy.createProxyServer()
+const config = parse(
+  readFileSync('./config.yml', 'utf8') || readFileSync('./config.yaml', 'utf8'),
+)
+const subdomains = config['subdomains']
+const CertCA = config['ca']
+const getSubdomain = (domain) =>
+  domain.split(':')[0].split('.').slice(0, -2).join('.')
 proxy.on('error', function (err, req, res) {
   console.log(err)
   res.writeHead(500, {
@@ -27,9 +35,9 @@ proxy.on('close', function (res, socket, head) {
   console.log('Client disconnected')
 })
 const publicProcess = (req, res) => {
-  const host = req.headers.host.split(':')[0]
+  const subdomain = getSubdomain(req.headers.host)
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-  const domainURL = domains[host] || undefined
+  const domainURL = subdomains[subdomain].proxy || undefined
   if (domainURL) {
     proxy.web(req, res, {
       target: domainURL,
@@ -42,44 +50,45 @@ const publicProcess = (req, res) => {
       : req.url
     if (path.startsWith('/favicon.ico')) {
       res.setHeader('Content-Type', 'image/png')
-      fs.createReadStream('./wiki.png').pipe(res)
+      createReadStream('./favicon.png').pipe(res)
     } else {
       res.writeHead(200, preHeaders)
       res.end('Welcome to mingwiki server!')
     }
   }
 }
-const getSecureContext = (domain) => {
+const getSecureContext = (subdomain) => {
   try {
     return tls.createSecureContext({
-      key: fs.readFileSync(`./config/certs/${domain}.key`, 'utf8'),
-      cert: fs.readFileSync(`./config/certs/${domain}.pem`, 'utf8'),
-      ca: fs.readFileSync('./config/certs/root.ca', 'utf8'),
+      key: readFileSync(subdomains[subdomain].key, 'utf8'),
+      cert: readFileSync(subdomains[subdomain].cert, 'utf8'),
+      ca: readFileSync(CertCA, 'utf8'),
     })
   } catch (error) {}
 }
 const preGetSecureContext = () => {
   const res = {}
-  Object.keys(domains).forEach((domain) => {
-    res[domain] = getSecureContext(domain)
+  Object.keys(subdomains).forEach((subdomain) => {
+    res[subdomain] = getSecureContext(subdomain)
   })
   return res
 }
 const secureContext = preGetSecureContext()
 const options = {
   SNICallback: function (domain, cb) {
-    if (secureContext[domain]) {
+    const domainConfig = secureContext[getSubdomain(domain)]
+    if (domainConfig) {
       if (cb) {
-        cb(null, secureContext[domain])
+        cb(null, domainConfig)
       } else {
-        return secureContext[domain]
+        return domainConfig
       }
     } else {
       console.log('No keys/certificates for domain requested')
     }
   },
-  cert: fs.readFileSync(`./localhost.pem`, 'utf8'),
-  key: fs.readFileSync(`./localhost.key`, 'utf8'),
+  cert: readFileSync(`certs/localhost.pem`, 'utf8'),
+  key: readFileSync(`certs/localhost.key`, 'utf8'),
 }
 const httpServer = http.createServer((req, res) => {
   publicProcess(req, res)
@@ -87,10 +96,11 @@ const httpServer = http.createServer((req, res) => {
 const httpsServer = https.createServer(options, (req, res) => {
   publicProcess(req, res)
 })
+console.log('Server started')
 httpServer.listen(100)
 httpsServer.listen(200)
 
-export const preHeaders = {
+const preHeaders = {
   'x-powered-by': 'mingwiki',
   'x-redirect-by': 'mingwiki',
   'x-server': 'mingwiki',

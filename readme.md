@@ -9,7 +9,7 @@ $ npm i -g forever && npm i
 ## Usage
 
 ```shell
-$ forever start -l forever.log -o out.log -e err.log index.js
+$ forever start -l forever.log -o out.log -e err.log app
 ```
 
 ## Configuration

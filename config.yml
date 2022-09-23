@@ -1,6 +1,9 @@
-root: example.com
 ca: certs/root.crt
 subdomains:
+  root:
+    proxy: http://127.0.0.1:9999
+    cert: certs/example.com.pem
+    key: certs/example.com.key
   code: # http(s)://code.example.com
     proxy: http://127.0.0.1:8080
     cert: certs/code.example.com.pem

@@ -9,7 +9,7 @@ const proxy = httpProxy.createProxyServer()
 const config = parse(
   readFileSync('./config.yml', 'utf8') || readFileSync('./config.yaml', 'utf8'),
 )
-const subdomains = config['subdomains'].push({ '': config['root'] })
+const subdomains = config['subdomains']
 const CertCA = config['ca']
 const getSubdomain = (domain) =>
   domain.split(':')[0].split('.').slice(0, -2).join('.') || 'root'

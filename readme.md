@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-$ npm i -g forever && npm i
+$ npm i -g forever && npm i && mv config.yml.example config.yml
 ```
 
 ## Usage

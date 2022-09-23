@@ -10,6 +10,8 @@ const config = parse(
   readFileSync('./config.yml', 'utf8') || readFileSync('./config.yaml', 'utf8'),
 )
 const subdomains = config['subdomains']
+const http_port = config['ports']?.http || 80
+const https_port = config['ports']?.https || 443
 const CertCA = config['ca']
 const getSubdomain = (domain) =>
   domain.split(':')[0].split('.').slice(0, -2).join('.') || 'root'
@@ -91,14 +93,25 @@ const options = {
   key: readFileSync(`certs/localhost.key`, 'utf8'),
 }
 const httpServer = http.createServer((req, res) => {
-  publicProcess(req, res)
+  if (
+    subdomains[getSubdomain(req.headers.host)]?.key &&
+    subdomains[getSubdomain(req.headers.host)]?.cert
+  ) {
+    res.setHeader(
+      'location',
+      `https://${req.headers.host.split(':')[0]}:${https_port}`,
+    )
+    res.writeHead(301).end()
+  } else {
+    publicProcess(req, res)
+  }
 })
 const httpsServer = https.createServer(options, (req, res) => {
   publicProcess(req, res)
 })
 console.log('Server started')
-httpServer.listen(100)
-httpsServer.listen(200)
+httpServer.listen(http_port)
+httpsServer.listen(https_port)
 
 const preHeaders = {
   'x-powered-by': 'mingwiki',

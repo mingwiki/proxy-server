@@ -10,3 +10,6 @@ subdomains:
     key: certs/code.example.com.key
   git: # http://git.example.com
     proxy: http://10.10.10.10:6666
+ports:
+  https: 443
+  http: 80

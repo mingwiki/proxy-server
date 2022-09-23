@@ -14,7 +14,7 @@ const http_port = config['ports']?.http || 80
 const https_port = config['ports']?.https || 443
 const CertCA = config['ca']
 const getSubdomain = (domain) =>
-  domain.split(':')[0].split('.').slice(0, -2).join('.') || 'root'
+  domain.split(':')[0].split('.').slice(0, -2).join('.') || 'www'
 proxy.on('error', function (err, req, res) {
   console.log(err)
   res.writeHead(500, {

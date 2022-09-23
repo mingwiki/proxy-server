@@ -60,8 +60,8 @@ const publicProcess = (req, res) => {
 const getSecureContext = (subdomain) => {
   try {
     return tls.createSecureContext({
-      key: readFileSync(subdomains[subdomain].key, 'utf8'),
-      cert: readFileSync(subdomains[subdomain].cert, 'utf8'),
+      key: readFileSync(subdomains[subdomain].key || '', 'utf8'),
+      cert: readFileSync(subdomains[subdomain].cert || '', 'utf8'),
       ca: readFileSync(CertCA, 'utf8'),
     })
   } catch (error) {}

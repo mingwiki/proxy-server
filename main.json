@@ -1,0 +1,10 @@
+{
+    "uid": "proxy-server",
+    "append": true,
+    "watch": true,
+    "script": "app",
+    "sourceDir": "./",
+    "logFile": "./forever.log",
+    "outFile": "./out.log",
+    "errFile": "./error.log"
+}

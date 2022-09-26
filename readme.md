@@ -9,7 +9,9 @@ $ npm i -g forever && npm i && mv config.yml.example config.yml
 ## Usage
 
 ```shell
-$ forever start -a -l forever.log -o out.log -e err.log app
+$ forever start main.json
+$ forever list
+$ forever stop proxy-server
 ```
 
 ## Configuration
